@@ -37,27 +37,31 @@ public class AuthController {
     // ================= REGISTER =================
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest req) {
-
-        // Check if email already exists
+    
+        // 1️⃣ Check if email already exists
         if (userRepo.findByEmail(req.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
-
-        // Get or create ADMIN role
-        Role adminRole = roleRepo.findByName("ADMIN")
-                .orElseGet(() -> roleRepo.save(new Role(null, "ADMIN")));
-
-        // Create user
+    
+        // 2️⃣ Get role from request (ADMIN / USER)
+        String roleName = req.getRole().toUpperCase();
+    
+        // 3️⃣ Find or create role
+        Role role = roleRepo.findByName(roleName)
+                .orElseGet(() -> roleRepo.save(new Role(null, roleName)));
+    
+        // 4️⃣ Create user
         User user = new User();
         user.setEmail(req.getEmail());
         user.setPassword(encoder.encode(req.getPassword()));
-        user.setRoles(Set.of(adminRole));
-
+        user.setRoles(Set.of(role));   // ✅ NOW user exists
+    
+        // 5️⃣ Save
         userRepo.save(user);
-
+    
         return "User registered successfully";
     }
-
+    
     // ================= LOGIN =================
     @PostMapping("/login")
 public String login(@RequestBody LoginRequest req) {

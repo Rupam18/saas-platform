@@ -60,15 +60,21 @@ public class AuthController {
 
     // ================= LOGIN =================
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest req) {
+public String login(@RequestBody LoginRequest req) {
 
-        User user = userRepo.findByEmail(req.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepo.findByEmail(req.getEmail())
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!encoder.matches(req.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        return jwtUtil.generateToken(user.getEmail());
+    if (!encoder.matches(req.getPassword(), user.getPassword())) {
+        throw new RuntimeException("Invalid password");
     }
+
+    String token = jwtUtil.generateToken(
+            user.getEmail(),
+            user.getRoles().iterator().next().getName()
+    );
+
+    return token;
+}
+
 }

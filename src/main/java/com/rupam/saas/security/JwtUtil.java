@@ -16,13 +16,14 @@ public class JwtUtil {
     private final SecretKey key =
             Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
-    public String generateToken(String email, String role) {
-
+    // 🔐 Generate JWT with role + companyId
+    public String generateToken(String email, String role, Long companyId) {
         return Jwts.builder()
                 .subject(email)
                 .claim("role", role)
+                .claim("companyId", companyId)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000)) // 24 hours
+                .expiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
                 .signWith(key)
                 .compact();
     }
@@ -43,5 +44,14 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload()
                 .get("role", String.class);
+    }
+
+    public Long extractCompanyId(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("companyId", Long.class);
     }
 }

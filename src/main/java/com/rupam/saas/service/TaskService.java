@@ -1,12 +1,19 @@
 package com.rupam.saas.service;
 
 import com.rupam.saas.dto.TaskRequest;
+import com.rupam.saas.dto.TaskSearchRequest;
 import com.rupam.saas.entity.Company;
 import com.rupam.saas.entity.Task;
 import com.rupam.saas.exception.ResourceNotFoundException;
 import com.rupam.saas.repository.CompanyRepository;
 import com.rupam.saas.repository.TaskRepository;
+import com.rupam.saas.specification.TaskSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +23,7 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepo;
-    private final CompanyRepository companyRepo; // Using repo directly for lookup
+    private final CompanyRepository companyRepo;
 
     public Task createTask(TaskRequest req, Long companyId) {
         Company company = companyRepo.findById(companyId)
@@ -29,6 +36,14 @@ public class TaskService {
         task.setCompany(company);
 
         return taskRepo.save(task);
+    }
+
+    public Page<Task> searchTasks(TaskSearchRequest searchReq, Long companyId) {
+        Sort sort = Sort.by(Sort.Direction.fromString(searchReq.getDirection()), searchReq.getSortBy());
+        Pageable pageable = PageRequest.of(searchReq.getPage(), searchReq.getSize(), sort);
+
+        Specification<Task> spec = TaskSpecification.getTasks(searchReq, companyId);
+        return taskRepo.findAll(spec, pageable);
     }
 
     public List<Task> getTasksByCompany(Long companyId) {

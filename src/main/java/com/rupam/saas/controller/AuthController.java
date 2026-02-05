@@ -3,6 +3,7 @@ package com.rupam.saas.controller;
 import com.rupam.saas.dto.LoginRequest;
 import com.rupam.saas.dto.RegisterRequest;
 import com.rupam.saas.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest req) {
+    public String register(@Valid @RequestBody RegisterRequest req) {
         return authService.register(req);
     }
 

@@ -27,8 +27,20 @@ const Landing = () => {
             }
             navigate('/dashboard');
         } catch (err) {
-            setError('Authentication failed. Check credentials.');
             console.error(err);
+            if (err.response && err.response.data) {
+                // If validation error (Map), show first error or generic message
+                const data = err.response.data;
+                if (typeof data === 'object' && !data.message && !data.error) {
+                    // Assert it's a map of field errors
+                    const firstError = Object.values(data)[0];
+                    setError(firstError || 'Validation failed');
+                } else {
+                    setError(data.message || data.error || 'Authentication failed. Check credentials.');
+                }
+            } else {
+                setError('Authentication failed. Check credentials.');
+            }
         }
     };
 

@@ -93,6 +93,6 @@ public class TaskIntegrationTest {
                 mockMvc.perform(get("/tasks")
                                 .header("Authorization", "Bearer " + token))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$[0].title").value("New Integration Task"));
+                                .andExpect(jsonPath("$.content[0].title").value("New Integration Task"));
         }
 }

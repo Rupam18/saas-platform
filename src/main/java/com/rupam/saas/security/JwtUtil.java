@@ -11,14 +11,12 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String secret;
     private final long jwtExpiration;
     private final SecretKey key;
 
     public JwtUtil(
             @org.springframework.beans.factory.annotation.Value("${jwt.secret}") String secret,
             @org.springframework.beans.factory.annotation.Value("${jwt.expiration}") long jwtExpiration) {
-        this.secret = secret;
         this.jwtExpiration = jwtExpiration;
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tasks")
-public class Task {
+public class Task extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,8 @@ public class Task {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    public Task() {}
+    public Task() {
+    }
 
     // ---------- Getters ----------
     public Long getId() {
@@ -65,4 +66,3 @@ public class Task {
         this.company = company;
     }
 }
-

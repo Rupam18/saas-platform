@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/saas_platform?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - db
+    networks:
+      - saas-net
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306" # Expose on 3307 to avoid conflict if local mysql is running
+    environment:
+      - MYSQL_DATABASE=saas_platform
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - saas-net
+
+networks:
+  saas-net:
+    driver: bridge
+
+volumes:
+  db_data:

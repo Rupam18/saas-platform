@@ -1,0 +1,9 @@
+@import './styles/variables.css';
+@import './styles/components.css';
+
+/* Custom Global Reset overrides if needed, otherwise handled in variables.css */
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}

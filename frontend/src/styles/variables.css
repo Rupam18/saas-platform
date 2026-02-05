@@ -1,0 +1,56 @@
+:root {
+  /* HSL Color Palette - Premium Dark */
+  --bg-primary: 220, 20%, 10%;
+  --bg-secondary: 220, 20%, 14%;
+  --bg-glass: 220, 20%, 14%, 0.7;
+  
+  --primary: 250, 70%, 65%; /* Soft Violet */
+  --primary-glow: 250, 70%, 65%, 0.4;
+  --secondary: 180, 50%, 60%; /* Teal/Cyan */
+  
+  --text-main: 220, 10%, 95%;
+  --text-muted: 220, 10%, 65%;
+  
+  --border: 220, 20%, 25%;
+  
+  /* Spacing */
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  
+  /* Shadow */
+  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px var(--primary-glow);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: hsl(var(--bg-primary));
+  color: hsl(var(--text-main));
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: hsla(var(--bg-glass));
+  backdrop-filter: blur(12px);
+  border: 1px solid hsla(var(--text-main), 0.1);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

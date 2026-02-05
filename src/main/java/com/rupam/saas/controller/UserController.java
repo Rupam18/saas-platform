@@ -1,23 +1,30 @@
 package com.rupam.saas.controller;
 
-import com.rupam.saas.entity.User;
-import com.rupam.saas.repository.UserRepository;
-import org.springframework.web.bind.annotation.*;
+import com.rupam.saas.dto.UserResponse;
+import com.rupam.saas.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepo;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepo) {
-        this.userRepo = userRepo;
+    @GetMapping("/me")
+    public UserResponse getMyProfile(Authentication authentication) {
+        return userService.getUserProfile(authentication.getName());
     }
 
+    // Optional: Admin only endpoint in future
     @GetMapping
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public List<UserResponse> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

@@ -1,40 +1,42 @@
 package com.rupam.saas.controller;
 
-import com.rupam.saas.entity.Company;
+import com.rupam.saas.dto.TaskRequest;
 import com.rupam.saas.entity.Task;
-import com.rupam.saas.repository.CompanyRepository;
-import com.rupam.saas.repository.TaskRepository;
+import com.rupam.saas.service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
+@RequiredArgsConstructor
 public class TaskController {
 
-    private final TaskRepository taskRepo;
-    private final CompanyRepository companyRepo;
+    private final TaskService taskService;
 
-    public TaskController(TaskRepository taskRepo, CompanyRepository companyRepo) {
-        this.taskRepo = taskRepo;
-        this.companyRepo = companyRepo;
+    private Long getCompanyId(HttpServletRequest request) {
+        return (Long) request.getAttribute("companyId");
     }
 
-    // Create task
     @PostMapping
-    public Task create(@RequestBody Task task, HttpServletRequest request) {
-        Long companyId = (Long) request.getAttribute("companyId");
-        Company company = companyRepo.findById(companyId).orElseThrow();
-
-        task.setCompany(company);
-        return taskRepo.save(task);
+    public Task create(@RequestBody TaskRequest req, HttpServletRequest request) {
+        return taskService.createTask(req, getCompanyId(request));
     }
 
-    // Get all tasks of this company
     @GetMapping
     public List<Task> getMyTasks(HttpServletRequest request) {
-        Long companyId = (Long) request.getAttribute("companyId");
-        return taskRepo.findByCompanyId(companyId);
+        return taskService.getTasksByCompany(getCompanyId(request));
+    }
+
+    @PutMapping("/{id}")
+    public Task update(@PathVariable Long id, @RequestBody TaskRequest req, HttpServletRequest request) {
+        return taskService.updateTask(id, req, getCompanyId(request));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id, HttpServletRequest request) {
+        taskService.deleteTask(id, getCompanyId(request));
     }
 }

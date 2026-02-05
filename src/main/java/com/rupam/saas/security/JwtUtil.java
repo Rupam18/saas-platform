@@ -11,10 +11,17 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET = "saas-platform-secret-key-which-must-be-32-bytes";
+    private final String secret;
+    private final long jwtExpiration;
+    private final SecretKey key;
 
-    private final SecretKey key =
-            Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    public JwtUtil(
+            @org.springframework.beans.factory.annotation.Value("${jwt.secret}") String secret,
+            @org.springframework.beans.factory.annotation.Value("${jwt.expiration}") long jwtExpiration) {
+        this.secret = secret;
+        this.jwtExpiration = jwtExpiration;
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     // 🔐 Generate JWT with role + companyId
     public String generateToken(String email, String role, Long companyId) {
@@ -23,7 +30,7 @@ public class JwtUtil {
                 .claim("role", role)
                 .claim("companyId", companyId)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key)
                 .compact();
     }

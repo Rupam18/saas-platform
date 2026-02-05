@@ -22,9 +22,9 @@ public class UserController {
         return userService.getUserProfile(authentication.getName());
     }
 
-    // Optional: Admin only endpoint in future
     @GetMapping
-    public List<UserResponse> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserResponse> getAllUsers(Authentication authentication) {
+        // Implement logic in service to filter by company of the logged-in user
+        return userService.getAllUsersByCompany(authentication.getName());
     }
 }

@@ -55,7 +55,7 @@ public class TaskIntegrationTest {
                 registerReq.setCompanyName("Task Corp");
                 registerReq.setRole("USER");
 
-                mockMvc.perform(post("/register")
+                mockMvc.perform(post("/auth/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(registerReq)))
                                 .andExpect(status().isOk());
@@ -65,7 +65,7 @@ public class TaskIntegrationTest {
                 loginReq.setEmail("taskuser@example.com");
                 loginReq.setPassword("password123");
 
-                MvcResult result = mockMvc.perform(post("/login")
+                MvcResult result = mockMvc.perform(post("/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(loginReq)))
                                 .andExpect(status().isOk())

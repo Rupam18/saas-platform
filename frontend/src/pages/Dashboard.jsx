@@ -3,12 +3,16 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import MetricsCards from '../components/MetricsCards';
 import { FiPlus, FiTrash2, FiCheckCircle, FiCircle } from 'react-icons/fi';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const Dashboard = () => {
     const { user } = useAuth();
     const [tasks, setTasks] = useState([]);
+    const [stats, setStats] = useState({});
     const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskStatus, setNewTaskStatus] = useState('PENDING');
     const [loading, setLoading] = useState(true);
 
     // Pagination & Filter State
@@ -44,13 +48,24 @@ const Dashboard = () => {
         }
     };
 
+    const fetchAnalytics = async () => {
+        try {
+            const res = await api.get('/analytics/tasks');
+            setStats(res.data);
+        } catch (err) {
+            console.error("Failed to fetch analytics", err);
+        }
+    };
+
     // Debounce search or fetch on dependency change
     useEffect(() => {
         fetchTasks();
     }, [page, statusFilter]); // Fetch when page or status changes
 
-    // Separate useEffect for search title debounce could be added, but simple button or enter key is easier for MVP
-    // For now, let's just add a search button or fetch on enter in the input
+    // Update stats whenever tasks change (simple approximation) or on mount
+    useEffect(() => {
+        fetchAnalytics();
+    }, [tasks]); // Refresh stats when tasks list updates (e.g. after create/delete)
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -66,22 +81,31 @@ const Dashboard = () => {
             await api.post('/tasks', {
                 title: newTaskTitle,
                 description: 'Created via Frontend',
-                status: 'PENDING'
+                status: newTaskStatus
             });
             setNewTaskTitle('');
+            setNewTaskStatus('PENDING');
             fetchTasks(); // Refresh list to show new task (and potentially re-sort)
         } catch (err) {
             console.error("Failed to create task", err);
         }
     };
 
-    const handleToggleStatus = async (task) => {
-        const newStatus = task.status === 'DONE' ? 'PENDING' : 'DONE';
+    const handleStatusChange = async (task, newStatus) => {
+        // Optimistic UI Update
+        const previousTasks = [...tasks];
+        setTasks(tasks.map(t => t.id === task.id ? { ...t, status: newStatus } : t));
+
         try {
-            await api.put(`/tasks/${task.id}`, { status: newStatus });
-            fetchTasks(); // Refresh to update list state correctly
+            await api.put(`/tasks/${task.id}`, {
+                title: task.title,
+                description: task.description,
+                status: newStatus
+            });
+            fetchTasks(); // Refresh to confirm and update sort order
         } catch (err) {
             console.error("Failed to update task", err);
+            setTasks(previousTasks); // Revert on failure
         }
     };
 
@@ -100,6 +124,15 @@ const Dashboard = () => {
         }
     };
 
+    // Chart Data Preparation
+    const pieData = [
+        { name: 'Completed', value: stats.completedTasks || 0, color: '#00C851' },
+        { name: 'Pending', value: stats.pendingTasks || 0, color: '#ff4444' },
+        { name: 'In Progress', value: stats.inProgressTasks || 0, color: '#ffbb33' },
+    ].filter(d => d.value > 0);
+
+    const barData = stats.activity || [];
+
     return (
         <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
             <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'end' }}>
@@ -109,6 +142,53 @@ const Dashboard = () => {
                 </div>
                 <div style={{ fontSize: '3rem', opacity: 0.1 }}>🚀</div>
             </header>
+
+            {/* Analytics Section */}
+            <MetricsCards data={stats} />
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+                {/* Pie Chart */}
+                <div className="card glass">
+                    <h3 style={{ marginBottom: '1rem' }}>Task Distribution</h3>
+                    <div style={{ height: '300px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={pieData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                >
+                                    {pieData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                {/* Bar Chart */}
+                <div className="card glass">
+                    <h3 style={{ marginBottom: '1rem' }}>Activity (Last 7 Days)</h3>
+                    <div style={{ height: '300px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={barData}>
+                                <XAxis dataKey="date" stroke="var(--text-muted)" tickFormatter={(str) => str ? str.slice(5) : ''} />
+                                <YAxis stroke="var(--text-muted)" allowDecimals={false} />
+                                <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ backgroundColor: '#1a1a2e', border: 'none' }} />
+                                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+            </div>
+
 
             {/* Controls: Search & Filter */}
             <div className="card glass" style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -149,11 +229,33 @@ const Dashboard = () => {
                 <div className="card glass" style={{ height: 'fit-content' }}>
                     <h3 style={{ marginBottom: '1.5rem' }}>New Task</h3>
                     <form onSubmit={handleCreateTask}>
-                        <Input
-                            label="Task Title"
-                            value={newTaskTitle}
-                            onChange={(e) => setNewTaskTitle(e.target.value)}
-                        />
+                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                            <Input
+                                label="Task Title"
+                                value={newTaskTitle}
+                                onChange={(e) => setNewTaskTitle(e.target.value)}
+                                style={{ flex: 1, marginBottom: 0 }}
+                            />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Status</label>
+                                <select
+                                    value={newTaskStatus}
+                                    onChange={(e) => setNewTaskStatus(e.target.value)}
+                                    style={{
+                                        padding: '0.75rem',
+                                        borderRadius: '8px',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        background: 'rgba(255,255,255,0.05)',
+                                        color: 'white',
+                                        height: '46px'
+                                    }}
+                                >
+                                    <option value="PENDING">Pending</option>
+                                    <option value="IN_PROGRESS">In Progress</option>
+                                    <option value="DONE">Completed</option>
+                                </select>
+                            </div>
+                        </div>
                         <Button type="submit" style={{ width: '100%' }}>
                             <FiPlus /> Add Task
                         </Button>
@@ -205,25 +307,41 @@ const Dashboard = () => {
                                     borderLeft: `4px solid ${task.status === 'DONE' ? 'hsl(var(--secondary))' : 'hsl(var(--primary))'}`
                                 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                        <div
-                                            onClick={() => handleToggleStatus(task)}
-                                            style={{ cursor: 'pointer', color: task.status === 'DONE' ? 'hsl(var(--secondary))' : 'hsl(var(--text-muted))', fontSize: '1.5rem', display: 'flex' }}
+                                        <select
+                                            value={task.status}
+                                            onChange={(e) => handleStatusChange(task, e.target.value)}
+                                            style={{
+                                                padding: '0.4rem 0.8rem',
+                                                borderRadius: '20px',
+                                                border: 'none',
+                                                background: task.status === 'DONE' ? 'rgba(76, 175, 80, 0.2)' : task.status === 'IN_PROGRESS' ? 'rgba(255, 187, 51, 0.2)' : 'rgba(255, 68, 68, 0.2)',
+                                                color: task.status === 'DONE' ? '#4caf50' : task.status === 'IN_PROGRESS' ? '#ffbb33' : '#ff4444',
+                                                cursor: 'pointer',
+                                                fontSize: '0.85rem',
+                                                fontWeight: '600',
+                                                appearance: 'none', /* Remove default arrow for cleaner look (optional, or custom arrow) */
+                                                textAlign: 'center',
+                                                minWidth: '100px'
+                                            }}
+                                            onClick={(e) => e.stopPropagation()}
                                         >
-                                            {task.status === 'DONE' ? <FiCheckCircle /> : <FiCircle />}
-                                        </div>
+                                            <option value="PENDING">Pending</option>
+                                            <option value="IN_PROGRESS">In Progress</option>
+                                            <option value="DONE">Completed</option>
+                                        </select>
                                         <div>
                                             <h4 style={{ textDecoration: task.status === 'DONE' ? 'line-through' : 'none', color: task.status === 'DONE' ? 'var(--text-muted)' : 'var(--text-main)' }}>
                                                 {task.title}
                                             </h4>
-                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', background: 'hsla(var(--bg-primary), 0.5)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
-                                                {task.status}
-                                            </span>
+
                                         </div>
                                     </div>
 
-                                    <Button variant="outline" onClick={() => handleDelete(task.id)} style={{ padding: '0.5rem', color: '#ff4d4d', borderColor: '#ff4d4d' }}>
-                                        <FiTrash2 />
-                                    </Button>
+                                    {user?.roles?.includes('ADMIN') && (
+                                        <Button variant="outline" onClick={() => handleDelete(task.id)} style={{ padding: '0.5rem', color: '#ff4d4d', borderColor: '#ff4d4d' }}>
+                                            <FiTrash2 />
+                                        </Button>
+                                    )}
                                 </div>
                             ))}
                         </div>

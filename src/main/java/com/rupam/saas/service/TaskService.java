@@ -72,4 +72,31 @@ public class TaskService {
 
         taskRepo.delete(task);
     }
+
+    public com.rupam.saas.dto.TaskStatistics getTaskStatistics(Long companyId) {
+        long total = taskRepo.countByCompanyId(companyId);
+        long completed = taskRepo.countByCompanyIdAndStatus(companyId, "DONE");
+        long pending = taskRepo.countByCompanyIdAndStatus(companyId, "PENDING");
+        long inProgress = taskRepo.countByCompanyIdAndStatus(companyId, "IN_PROGRESS");
+
+        java.time.LocalDateTime sevenDaysAgo = java.time.LocalDateTime.now().minusDays(6).withHour(0).withMinute(0)
+                .withSecond(0);
+        List<Object[]> rawCounts = taskRepo.findTaskCountsByDate(companyId, sevenDaysAgo);
+
+        java.util.Map<String, Long> countMap = rawCounts.stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        row -> (String) row[0],
+                        row -> ((Number) row[1]).longValue()));
+
+        java.util.List<com.rupam.saas.dto.DailyTaskCount> activity = new java.util.ArrayList<>();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // Fill in last 7 days (including today)
+        for (int i = 6; i >= 0; i--) {
+            String date = java.time.LocalDateTime.now().minusDays(i).format(formatter);
+            activity.add(new com.rupam.saas.dto.DailyTaskCount(date, countMap.getOrDefault(date, 0L)));
+        }
+
+        return new com.rupam.saas.dto.TaskStatistics(total, completed, pending, inProgress, activity);
+    }
 }

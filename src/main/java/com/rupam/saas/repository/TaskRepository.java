@@ -19,4 +19,12 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 
     // Count tasks by status for a company
     long countByCompanyIdAndStatus(Long companyId, String status);
+
+    // Get tasks created after a certain date (for analytics)
+    @org.springframework.data.jpa.repository.Query("SELECT function('DATE_FORMAT', t.createdAt, '%Y-%m-%d') as date, COUNT(t) as count "
+            +
+            "FROM Task t WHERE t.company.id = :companyId AND t.createdAt >= :startDate " +
+            "GROUP BY function('DATE_FORMAT', t.createdAt, '%Y-%m-%d')")
+    List<Object[]> findTaskCountsByDate(@org.springframework.data.repository.query.Param("companyId") Long companyId,
+            @org.springframework.data.repository.query.Param("startDate") java.time.LocalDateTime startDate);
 }

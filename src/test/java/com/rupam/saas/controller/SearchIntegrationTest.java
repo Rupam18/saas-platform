@@ -60,7 +60,7 @@ class SearchIntegrationTest {
                 registerReq.setCompanyName("Search Corp");
                 registerReq.setRole("ADMIN");
 
-                mockMvc.perform(post("/register")
+                mockMvc.perform(post("/auth/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(registerReq)))
                                 .andExpect(status().isOk())
@@ -70,7 +70,7 @@ class SearchIntegrationTest {
                 loginReq.setEmail(email);
                 loginReq.setPassword("password");
 
-                MvcResult result = mockMvc.perform(post("/login")
+                MvcResult result = mockMvc.perform(post("/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(loginReq)))
                                 .andExpect(status().isOk())

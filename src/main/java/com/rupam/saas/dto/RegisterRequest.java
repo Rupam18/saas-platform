@@ -19,4 +19,6 @@ public class RegisterRequest {
 
     @NotBlank(message = "Company name is required")
     private String companyName;
+
+    private String invitationToken; // Optional: Only for invited users
 }

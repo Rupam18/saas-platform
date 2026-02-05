@@ -27,7 +27,11 @@ const Landing = () => {
             }
             navigate('/dashboard');
         } catch (err) {
-            console.error(err);
+            console.error("Registration error:", err);
+            if (err.response) {
+                console.error("Response data:", err.response.data);
+                console.error("Response status:", err.response.status);
+            }
             if (err.response && err.response.data) {
                 // If validation error (Map), show first error or generic message
                 const data = err.response.data;
@@ -38,6 +42,8 @@ const Landing = () => {
                 } else {
                     setError(data.message || data.error || 'Authentication failed. Check credentials.');
                 }
+            } else if (err.request) {
+                setError('No response from server. Is backend running?');
             } else {
                 setError('Authentication failed. Check credentials.');
             }

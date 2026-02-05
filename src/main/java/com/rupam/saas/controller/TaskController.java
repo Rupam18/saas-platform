@@ -37,6 +37,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long id, HttpServletRequest request) {
         taskService.deleteTask(id, getCompanyId(request));
     }

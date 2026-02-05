@@ -34,6 +34,7 @@ const Navbar = () => {
                 {user ? (
                     <>
                         <Link to="/dashboard" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>Dashboard</Link>
+                        <Link to="/team" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>Team</Link>
                         <Link to="/profile">
                             <Button variant="outline" style={{ padding: '0.5rem' }}>
                                 <FiUser />

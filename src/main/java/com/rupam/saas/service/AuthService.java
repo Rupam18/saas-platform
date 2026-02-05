@@ -7,6 +7,8 @@ import com.rupam.saas.entity.Role;
 import com.rupam.saas.entity.User;
 import com.rupam.saas.repository.RoleRepository;
 import com.rupam.saas.repository.UserRepository;
+import com.rupam.saas.repository.InvitationRepository;
+import com.rupam.saas.repository.CompanyRepository;
 import com.rupam.saas.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +23,9 @@ public class AuthService {
 
     private final UserRepository userRepo;
     private final RoleRepository roleRepo;
-    private final CompanyService companyService; // Use service instead of repo if possible, or repo
+    private final CompanyService companyService;
+    private final InvitationRepository invitationRepo; // New dependency
+    private final CompanyRepository companyRepo; // New dependency
     private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
 
@@ -31,13 +35,41 @@ public class AuthService {
             throw new RuntimeException("Email already registered");
         }
 
-        // Create company
-        Company company = companyService.createCompany(req.getCompanyName(), req.getEmail());
+        Company company;
+        String roleName;
 
-        // Get role
-        String roleName = req.getRole().toUpperCase();
-        Role role = roleRepo.findByName(roleName)
-                .orElseGet(() -> roleRepo.save(new Role(null, roleName)));
+        // Check if registering via invitation
+        if (req.getInvitationToken() != null && !req.getInvitationToken().isEmpty()) {
+            com.rupam.saas.entity.Invitation invitation = invitationRepo.findByToken(req.getInvitationToken())
+                    .orElseThrow(() -> new RuntimeException("Invalid invitation token"));
+
+            if (invitation.isAccepted()) {
+                throw new RuntimeException("Invitation already accepted");
+            }
+
+            if (!invitation.getEmail().equalsIgnoreCase(req.getEmail())) {
+                throw new RuntimeException("Email does not match invitation");
+            }
+
+            company = companyRepo.findById(invitation.getCompanyId())
+                    .orElseThrow(() -> new RuntimeException("Company not found"));
+            roleName = invitation.getRole();
+
+            // Mark as accepted
+            invitation.setAccepted(true);
+            invitationRepo.save(invitation);
+
+            // Skip company name check for invited users
+        } else {
+            // Standard registration: Create new company
+            company = companyService.createCompany(req.getCompanyName(), req.getEmail());
+            roleName = req.getRole().toUpperCase();
+        }
+
+        // Get or create role
+        String finalRoleName = roleName;
+        Role role = roleRepo.findByName(finalRoleName)
+                .orElseGet(() -> roleRepo.save(new Role(null, finalRoleName)));
 
         // Create user
         User user = new User();
@@ -48,7 +80,7 @@ public class AuthService {
 
         userRepo.save(user);
 
-        return "Company and Admin created successfully";
+        return "User registered successfully";
     }
 
     public String login(LoginRequest req) {

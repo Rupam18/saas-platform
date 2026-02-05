@@ -29,6 +29,19 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserResponse> getAllUsersByCompany(String currentUserEmail) {
+        User currentUser = userRepo.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (currentUser.getCompany() == null) {
+            return List.of(mapToResponse(currentUser));
+        }
+
+        return userRepo.findByCompanyId(currentUser.getCompany().getId()).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     private UserResponse mapToResponse(User user) {
         return new UserResponse(
                 user.getId(),

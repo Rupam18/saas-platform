@@ -1,0 +1,107 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.rupam:saas-platform >-----------------------
+[INFO] Building saas-platform 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.2:run (default-cli) > test-compile @ saas-platform >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ saas-platform ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ saas-platform ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ saas-platform ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ saas-platform ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.0.2:run (default-cli) < test-compile @ saas-platform <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.2:run (default-cli) @ saas-platform ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-02-05T15:24:23.360+05:30  INFO 43199 --- [saas-platform] [           main] com.rupam.saas.SaasPlatformApplication   : Starting SaasPlatformApplication using Java 24.0.1 with PID 43199 (/Users/rupamkumarsarangi/Desktop/saas-platform/target/classes started by rupamkumarsarangi in /Users/rupamkumarsarangi/Desktop/saas-platform)
+2026-02-05T15:24:23.363+05:30  INFO 43199 --- [saas-platform] [           main] com.rupam.saas.SaasPlatformApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-02-05T15:24:24.429+05:30  INFO 43199 --- [saas-platform] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-05T15:24:24.502+05:30  INFO 43199 --- [saas-platform] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 5 JPA repository interfaces.
+2026-02-05T15:24:25.155+05:30  INFO 43199 --- [saas-platform] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-05T15:24:25.168+05:30  INFO 43199 --- [saas-platform] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-05T15:24:25.168+05:30  INFO 43199 --- [saas-platform] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-05T15:24:25.225+05:30  INFO 43199 --- [saas-platform] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1780 ms
+2026-02-05T15:24:25.432+05:30  INFO 43199 --- [saas-platform] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-05T15:24:25.646+05:30  INFO 43199 --- [saas-platform] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-05T15:24:26.169+05:30  INFO 43199 --- [saas-platform] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-05T15:24:26.199+05:30  INFO 43199 --- [saas-platform] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-05T15:24:26.649+05:30  INFO 43199 --- [saas-platform] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5f4e389a
+2026-02-05T15:24:26.651+05:30  INFO 43199 --- [saas-platform] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-05T15:24:26.736+05:30  WARN 43199 --- [saas-platform] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-05T15:24:26.757+05:30  INFO 43199 --- [saas-platform] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/saas_platform]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 9.2
+	Default catalog/schema: saas_platform/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-05T15:24:27.894+05:30  INFO 43199 --- [saas-platform] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-05T15:24:28.006+05:30  INFO 43199 --- [saas-platform] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-05T15:24:28.236+05:30  INFO 43199 --- [saas-platform] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-05T15:24:29.562+05:30  WARN 43199 --- [saas-platform] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-05T15:24:30.562+05:30  INFO 43199 --- [saas-platform] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-05T15:24:30.584+05:30  INFO 43199 --- [saas-platform] [           main] com.rupam.saas.SaasPlatformApplication   : Started SaasPlatformApplication in 7.596 seconds (process running for 8.036)
+2026-02-05T15:25:04.450+05:30  INFO 43199 --- [saas-platform] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-05T15:25:04.451+05:30  INFO 43199 --- [saas-platform] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-05T15:25:04.459+05:30  INFO 43199 --- [saas-platform] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 8 ms
+Hibernate: select u1_0.id,u1_0.company_id,u1_0.created_at,u1_0.email,u1_0.password,u1_0.updated_at from users u1_0 where u1_0.email=?
+Hibernate: insert into company (created_at,email,name,updated_at) values (?,?,?,?)
+Hibernate: select r1_0.id,r1_0.name from roles r1_0 where r1_0.name=?
+Hibernate: insert into users (company_id,created_at,email,password,updated_at) values (?,?,?,?,?)
+Hibernate: insert into user_roles (user_id,role_id) values (?,?)
+Hibernate: select u1_0.id,u1_0.company_id,u1_0.created_at,u1_0.email,u1_0.password,u1_0.updated_at from users u1_0 where u1_0.email=?
+Hibernate: select c1_0.id,c1_0.created_at,c1_0.email,c1_0.name,c1_0.updated_at from company c1_0 where c1_0.id=?
+Hibernate: select r1_0.user_id,r1_1.id,r1_1.name from user_roles r1_0 join roles r1_1 on r1_1.id=r1_0.role_id where r1_0.user_id=?
+Hibernate: select c1_0.id,c1_0.created_at,c1_0.email,c1_0.name,c1_0.updated_at from company c1_0 where c1_0.id=?
+Hibernate: insert into tasks (company_id,created_at,description,status,title,updated_at) values (?,?,?,?,?,?)
+Hibernate: select t1_0.id,t1_0.company_id,t1_0.created_at,t1_0.description,t1_0.status,t1_0.title,t1_0.updated_at from tasks t1_0 where t1_0.company_id=? order by t1_0.created_at desc limit ?,?
+2026-02-05T15:25:05.477+05:30  WARN 43199 --- [saas-platform] [nio-8080-exec-5] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+Hibernate: select c1_0.id,c1_0.created_at,c1_0.email,c1_0.name,c1_0.updated_at from company c1_0 where c1_0.id=?
+2026-02-05T15:30:26.890+05:30  INFO 43199 --- [saas-platform] [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-05T15:30:26.907+05:30  INFO 43199 --- [saas-platform] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-05T15:30:26.923+05:30  INFO 43199 --- [saas-platform] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-05T15:30:26.954+05:30  INFO 43199 --- [saas-platform] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-05T15:30:26.976+05:30  INFO 43199 --- [saas-platform] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  06:06 min
+[INFO] Finished at: 2026-02-05T15:30:27+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.0.2:run (default-cli) on project saas-platform: Process terminated with exit code: 143 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

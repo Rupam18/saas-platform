@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import Team from './pages/Team';
+import AcceptInvite from './pages/AcceptInvite';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -39,6 +41,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/team"
+            element={
+              <ProtectedRoute>
+                <Team />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/accept-invite" element={<AcceptInvite />} />
         </Routes>
       </Router>
     </AuthProvider>

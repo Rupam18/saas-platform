@@ -163,7 +163,7 @@ saas_db
 2. Update `application.properties`
 
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/saas_db
+spring.datasource.url=jdbc:postgresql://localhost:5432/saas_platform
 spring.datasource.username=root
 spring.datasource.password=your_password
 ```

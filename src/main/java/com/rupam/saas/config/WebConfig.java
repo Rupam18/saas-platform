@@ -10,13 +10,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:5175") // Allow
-                                                                                                           // Frontend
-                                                                                                           // on
-                                                                                                           // multiple
-                                                                                                           // ports
+                .allowedOrigins("*") // Allow all origins for Vercel deployment
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowedHeaders("*");
+        // .allowCredentials(true); // Cannot use true with allowedOrigins("*")
     }
 }

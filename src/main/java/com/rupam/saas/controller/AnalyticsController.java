@@ -17,7 +17,8 @@ public class AnalyticsController {
     private final TaskService taskService;
 
     @GetMapping("/tasks")
-    public TaskStatistics getTaskStatistics(@AuthenticationPrincipal User user) {
-        return taskService.getTaskStatistics(user.getCompany().getId());
+    public TaskStatistics getTaskStatistics(jakarta.servlet.http.HttpServletRequest request) {
+        Long companyId = (Long) request.getAttribute("companyId");
+        return taskService.getTaskStatistics(companyId);
     }
 }

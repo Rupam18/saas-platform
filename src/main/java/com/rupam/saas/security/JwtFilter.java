@@ -60,7 +60,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 String role = claims.get("role", String.class);
 
                 // 🔥 SaaS magic
-                Long companyId = claims.get("companyId", Long.class);
+                Number companyIdNum = claims.get("companyId", Number.class);
+                Long companyId = companyIdNum != null ? companyIdNum.longValue() : null;
                 request.setAttribute("companyId", companyId);
 
                 var authorities = List.of(

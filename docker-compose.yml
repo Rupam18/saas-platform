@@ -15,14 +15,15 @@ services:
       - saas-net
 
   db:
-    image: mysql:8.0
+    image: postgres:15
     ports:
-      - "3307:3306" # Expose on 3307 to avoid conflict if local mysql is running
+      - "5432:5432"
     environment:
-      - MYSQL_DATABASE=saas_platform
-      - MYSQL_ROOT_PASSWORD=root
+      - POSTGRES_DB=saas_platform
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
     networks:
       - saas-net
 

@@ -78,7 +78,11 @@ public class AuthService {
         user.setCompany(company);
         user.setRoles(Set.of(role));
 
-        userRepo.save(user);
+        try {
+            userRepo.save(user);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new RuntimeException("Email already exists");
+        }
 
         return "User registered successfully";
     }

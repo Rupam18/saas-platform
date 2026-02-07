@@ -36,7 +36,7 @@ public class InvitationService {
         // MOCK EMAIL SENDING
         System.out.println("==================================================");
         System.out.println(" SENDING INVITE TO: " + req.getEmail());
-        System.out.println(" JOIN LINK: http://localhost:5173/accept-invite?token=" + token);
+        System.out.println(" JOIN LINK: https://saas-platform-alpha.vercel.app/accept-invite?token=" + token);
         System.out.println("==================================================");
 
         return saved;

@@ -12,6 +12,9 @@ public class CompanyService {
     private final CompanyRepository companyRepo;
 
     public Company createCompany(String name, String email) {
+        if (companyRepo.findByName(name).isPresent()) {
+            throw new RuntimeException("Company with this name already exists");
+        }
         Company company = new Company();
         company.setName(name);
         company.setEmail(email);

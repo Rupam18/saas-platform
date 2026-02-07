@@ -1,182 +1,255 @@
-🚀 SaaS Platform – JWT Authentication Backend (Spring Boot)
+# 🚀 SaaS Platform – Multi-Tenant Task Management System
 
-A secure backend system built with **Spring Boot, JWT, MySQL and Spring Security** that supports:
+A full-stack SaaS platform built with **Spring Boot**, **Spring Security**, **JWT**, and **PostgreSQL** that supports secure authentication, company-based multi-tenancy, and team task management with an interactive dashboard.
 
-* User registration
-* Login & JWT token generation
-* Secure API access using JWT
-* Role-based ready architecture
-
-This project follows **real-world SaaS backend design** used by companies.
+This project demonstrates a production-style backend architecture with role-based access control, REST APIs, Docker deployment, and a modern frontend.
 
 ---
 
-🛠 Tech Stack
+# 📌 Features
 
-| Layer       | Technology            |
-| ----------- | --------------------- |
-| Language    | Java 17               |
-| Framework   | Spring Boot           |
-| Security    | Spring Security + JWT |
-| Database    | MySQL                 |
-| ORM         | JPA / Hibernate       |
-| API Testing | Postman               |
-| Build Tool  | Maven                 |
+## 🔐 Authentication & Security
 
- 📂 Project Structure
+* User registration & login using JWT
+* Secure API access with Spring Security
+* Password encryption
+* Role-based access structure (Admin/User)
+
+## 🏢 Multi-Tenant Architecture
+
+* Users belong to companies/organizations
+* Data structured for SaaS-style scalability
+* Company-level user grouping
+
+## 📋 Task Management
+
+* Create and manage tasks
+* Track task status:
+
+  * Completed
+  * In Progress
+  * Pending
+* Dashboard visualization for task distribution
+
+## 📊 Dashboard
+
+* Activity overview (last 7 days)
+* Task status chart
+* Search & filter tasks
+
+## ☁️ Deployment Ready
+
+* Dockerized backend
+* Deployable on Render
+* Frontend hosted on Vercel
+
+---
+
+# 🧱 Tech Stack
+
+## Backend
+
+* Java 17
+* Spring Boot
+* Spring Security
+* JWT Authentication
+* Spring Data JPA
+* Hibernate
+* Maven
+
+## Frontend
+
+* Vite
+* JavaScript
+* HTML5
+* CSS3
+* Fetch API
+
+## Database
+
+* PostgreSQL
+
+## DevOps
+
+* Docker
+* Docker Compose
+* Render (Backend Hosting)
+* Vercel (Frontend Hosting)
+
+---
+
+# 🏗️ Project Architecture
 
 ```
-com.rupam.saas
-│
-├── controller
-│   ├── AuthController.java
-│   ├── UserController.java
-│   └── TestController.java
-│
-├── dto
-│   ├── LoginRequest.java
-│   └── RegisterRequest.java
-│
-├── entity
-│   ├── User.java
-│   ├── Role.java
-│   └── Company.java
-│
-├── repository
-│   ├── UserRepository.java
-│   └── RoleRepository.java
-│
-├── security
-│   ├── JwtUtil.java
-│   ├── JwtFilter.java
-│   └── SecurityConfig.java
-│
-└── SaasPlatformApplication.java
+Controller → Service → Repository → Database
+            ↓
+         Security (JWT)
 ```
 
-🔐 Authentication Flow
+### Layers
+
+* **Controller** – Handles API requests
+* **Service** – Business logic
+* **Repository** – Database interaction
+* **Security** – JWT validation & access control
+
+---
+
+# 📂 Folder Structure
 
 ```
-Register → Login → JWT Token → Secure API
-```
-
-Step-by-step
-
-1. User registers with email & password
-2. User logs in
-3. Server returns JWT token
-4. Client sends token in Authorization header
-5. JWT filter validates token
-6. Secure endpoints are accessible
-
-
-
-🔗 API Endpoints
-
-🧾 Register
-
-```
-POST /register
-```
-
-Body
-
-```json
-{
-  "email": "admin@test.com",
-  "password": "123456"
-}
+saas-platform/
+│
+├── backend/
+│   ├── controller/
+│   ├── service/
+│   ├── entity/
+│   ├── repository/
+│   ├── security/
+│   └── dto/
+│
+├── frontend/
+│   ├── src/
+│   └── public/
+│
+├── Dockerfile
+├── docker-compose.yml
+└── pom.xml
 ```
 
 ---
 
-🔑 Login
+# 🔐 Authentication Flow
+
+### Register
 
 ```
-POST /login
+POST /api/auth/register
 ```
 
-**Body**
+* Creates company
+* Creates user
+* Encrypts password
+* Assigns role
 
-```json
-{
-  "email": "admin@test.com",
-  "password": "123456"
-}
-```
-
-Response**
-
-```text
-eyJhbGciOiJIUzI1NiJ9...
-```
-
-(This is your JWT token)
-
-🔒 Secure API
+### Login
 
 ```
-GET /secure
+POST /api/auth/login
 ```
 
-Headers
+* Validates credentials
+* Generates JWT token
+* Returns token
+
+### Access Protected APIs
 
 ```
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer <token>
 ```
 
-Response**
+---
 
-```
-Welcome secure user
-```
+# 🗄️ Database Design
 
- 🛡 How Security Works
- Passwords are stored **encrypted**
- JWT contains the user identity
- Every secure request passes through `JwtFilter`
- If token is invalid → **403 Forbidden**
- If token is valid → request is allowed
+### Tables
 
-This is how production SaaS platforms protect APIs.
+* users
+* roles
+* companies
+* tasks
 
-🗄 Database
+### Relationships
 
-Users are stored in **MySQL**.
+* User → belongs to → Company
+* User → has → Role
+* Company → has → Multiple Users
 
-Example:
+---
 
-```sql
-SELECT * FROM user;
-```
+# ⚙️ Local Setup Instructions
 
-Passwords are NOT stored in plain text.
+## 1️⃣ Clone the Repository
 
-🚀 How to Run
-
-1. Create MySQL database
-
-```
-saas_db
+```bash
+git clone https://github.com/Rupam18/saas-platform.git
+cd saas-platform
 ```
 
-2. Update `application.properties`
+## 2️⃣ Backend Setup
 
-```
-spring.datasource.url=jdbc:postgresql://localhost:5432/saas_platform
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
-
-3. Run project
-
-```
+```bash
+cd backend
+mvn clean install
 mvn spring-boot:run
 ```
 
-4. Test using Postman
+## 3️⃣ Database Setup
 
+Update `application.properties`:
 
-Author
-Rupam Sarangi
-Java Backend & SaaS Developer
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/saas_db
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+```
+
+## 4️⃣ Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+# 🐳 Run Using Docker
+
+```bash
+docker-compose up --build
+```
+
+---
+
+# 🌍 Deployment
+
+* **Backend:** Render
+* **Frontend:** Vercel
+* **Database:** PostgreSQL (Cloud/Local)
+
+---
+
+# 📈 Future Improvements
+
+* Refresh token support
+* Email verification
+* Password reset
+* Role-based API restrictions
+* API documentation (Swagger)
+* Notifications system
+
+---
+
+# 👨‍💻 Author
+
+**Rupam Sarangi**
+
+* Built as a full-stack SaaS architecture learning project
+* Focused on security, scalability, and clean backend design
+
+---
+
+# ⭐ Project Highlights
+
+* Production-style Spring Boot architecture
+* JWT-based authentication & authorization
+* Multi-tenant SaaS-ready data model
+* Dockerized deployment
+* Interactive dashboard UI
+
+---
+
+# 📜 License
+
+This project is open-source and available under the MIT License.
